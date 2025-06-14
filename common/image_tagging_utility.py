@@ -80,7 +80,7 @@ def tagging_process(urls: List[str]) -> List[int]:
         nonlocal idx
 
         label = entry.get()
-        if label.isdigit() and 0 <= int(label) <= 4:
+        if label.isdigit() and 0 <= int(label) <= 5:
             labels.append(int(label))
             idx += 1
             entry.delete(0, tk.END)
@@ -104,8 +104,8 @@ def main():
     print("Succesful read data")
 
     ### Дальше для каждого участника команды своя строчка (раскомментируйте)
-    start_row, end_row, file_name = 0, 10000, "df_train_for_cv_minacov.csv"
-    # start_row, end_row, file_name = 10000, 20000, "df_train_for_cv_baryshev.csv"
+    # start_row, end_row, file_name = 0, 10000, "df_train_for_cv_minacov.csv"
+    start_row, end_row, file_name = 10000, 20000, "df_train_for_cv_baryshev.csv"
     # start_row, end_row, file_name = 20000, 30000, "df_train_for_cv_almetov.csv"
 
     df_train_for_CV = pd.read_csv("data/" + file_name)
