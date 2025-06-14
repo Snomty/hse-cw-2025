@@ -104,7 +104,7 @@ def main():
     print("Succesful read data")
 
     ### Дальше для каждого участника команды своя строчка (раскомментируйте)
-    # start_row, end_row, file_name = 0, 10000, "df_train_for_cv_minacov.csv"
+    start_row, end_row, file_name = 0, 10000, "df_train_for_cv_minacov.csv"
     # start_row, end_row, file_name = 10000, 20000, "df_train_for_cv_baryshev.csv"
     # start_row, end_row, file_name = 20000, 30000, "df_train_for_cv_almetov.csv"
 
