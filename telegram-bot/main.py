@@ -1,37 +1,63 @@
 import telebot
+import os
 
 from buttons import *
 from config import API
+from sessions_utility import *
+
 
 bot = telebot.TeleBot(API)
+sessions = load_or_create_sessions()
+
 
 
 @bot.message_handler(commands=['start'])
 def process_start(message):
-    pass
-
-
-@bot.message_handler(commands=['help'])
-def process_help(message):
-    help_information = "<b>Help</b> informations"
-
-    markup = types.InlineKeyboardMarkup()
-    markup.row(example_button_1, example_button_2)
-    markup.add(project_link_button)
 
     bot.send_message(
         message.chat.id, 
-        text=help_information, 
+        text=start_information, 
         parse_mode='html', 
-        reply_markup=markup
+        reply_markup=start_markup
     )
 
+
 @bot.callback_query_handler(func = lambda callback: True)
-def callback_example    (callback):
-    if callback.data == 'delete':
-        bot.delete_message(callback.message.chat.id, callback.message.message_id)
-    elif callback.data == 'edit':
-        bot.edit_message_text('new text', callback.message.chat.id, callback.message.message_id)
+def process_callback(callback):
+
+    if callback.data == 'new-session':
+        user_id = callback.message.from_user.id
+        try:
+            create_new_session(user_id)
+        except Exception as e:
+            bot.send_message(text="Произошла ошибка, повторите попытку позже.")
+        # bot.register_next_step_handler(callback.message, foo)
+
+    elif callback.data == 'back-to-start-menu':
+        bot.edit_message_text(
+            start_information, 
+            callback.message.chat.id, 
+            callback.message.message_id,
+            parse_mode = 'html',
+            reply_markup = start_markup
+        )
+    elif callback.data == 'show-desription':
+        bot.edit_message_text(
+            description_information, 
+            callback.message.chat.id, 
+            callback.message.message_id, 
+            parse_mode = 'html',
+            reply_markup = description_markup
+        )
+
+
+@bot.message_handler(content_types=['text', 'audio', 'video'])
+def process_spam(message):
+    bot.send_message(
+        message.chat.id, 
+        text = spam_information, 
+        parse_mode = 'html'
+    )
 
 
 
@@ -44,3 +70,5 @@ def process_mixed(message):
     text = message.text
 
 bot.infinity_polling()
+
+sessions.to_csv("telegram-bot/sessions.csv", index=False)
