@@ -13,13 +13,13 @@ sessions = load_or_create_sessions()
 @bot.message_handler(commands=['start'])
 def process_start(message):
 
-    bot.send_message(
+    bot.send_photo(
         message.chat.id, 
-        text = start_information, 
+        photo = img_logo, 
+        caption = start_information,
         parse_mode = 'html', 
         reply_markup = start_markup
     )
-
 
 @bot.callback_query_handler(func = lambda callback: "set-attr" not in callback.data)
 def process_navigation(callback):
@@ -27,11 +27,10 @@ def process_navigation(callback):
     if callback.data == 'new-session':
         user_id = callback.from_user.id
         create_new_session(sessions, user_id)
-        bot.edit_message_text(
-            successful_new_session_text,
-            callback.message.chat.id, 
-            callback.message.message_id,
-            parse_mode='html',
+        bot.edit_message_media(
+            chat_id = callback.message.chat.id, 
+            message_id = callback.message.message_id,
+            media = types.InputMediaPhoto(img_logo, caption=successful_new_session_text, parse_mode = 'html'),
             reply_markup = back_to_start_menu_markup
         )
 
@@ -39,49 +38,64 @@ def process_navigation(callback):
         user_id = callback.from_user.id
         session_id = get_user_session(sessions, user_id)
         if session_id == -1:
-            bot.edit_message_text(
-                "У вас пока что нет активных сессий. Вы можете создать новую сессию по кнопке в главном меню!",
-                callback.message.chat.id, 
-                callback.message.message_id,
-                parse_mode='html',
+            bot.edit_message_media(
+                chat_id = callback.message.chat.id, 
+                message_id = callback.message.message_id,
+                media = types.InputMediaPhoto(
+                    img_logo, 
+                    caption = no_active_session_information, 
+                    parse_mode = 'html'
+                ),
                 reply_markup = back_to_start_menu_markup
             )
             return 0
 
-        bot.edit_message_text(
-            session_text,
-            callback.message.chat.id, 
-            callback.message.message_id,
-            parse_mode='html',
+        bot.edit_message_media(
+            chat_id = callback.message.chat.id, 
+            message_id = callback.message.message_id,
+            media = types.InputMediaPhoto(
+                media = create_series_table_image(sessions.iloc[session_id], "Ваши данные"), 
+                # caption = build_session_text(sessions, user_id), 
+                parse_mode = 'html'
+            ),
             reply_markup = session_menu_markup
         )
         
     elif callback.data == 'back-to-start-menu':
-        bot.edit_message_text(
-            start_information, 
-            callback.message.chat.id, 
-            callback.message.message_id,
-            parse_mode = 'html',
+        bot.edit_message_media(
+            chat_id = callback.message.chat.id, 
+            message_id = callback.message.message_id,
+            media = types.InputMediaPhoto(
+                img_logo, 
+                caption = start_information, 
+                parse_mode = 'html'
+            ),
             reply_markup = start_markup
         )
 
     elif callback.data == 'save-and-end-session':
         user_id = callback.from_user.id
         session_id = get_user_session(sessions, user_id)
-        bot.edit_message_text(
-            start_information, 
-            callback.message.chat.id, 
-            callback.message.message_id,
-            parse_mode = 'html',
+        bot.edit_message_media(
+            chat_id = callback.message.chat.id, 
+            message_id = callback.message.message_id,
+            media = types.InputMediaPhoto(
+                img_logo, 
+                caption = start_information, 
+                parse_mode = 'html'
+            ),
             reply_markup = start_markup
         )
 
     elif callback.data == 'show-desription':
-        bot.edit_message_text(
-           "description later...", 
-            callback.message.chat.id, 
-            callback.message.message_id, 
-            parse_mode = 'html',
+        bot.edit_message_media(
+            chat_id = callback.message.chat.id, 
+            message_id = callback.message.message_id,
+            media = types.InputMediaPhoto(
+                img_logo, 
+                caption = description_information, 
+                parse_mode = 'html'
+            ),
             reply_markup = back_to_start_menu_markup
         )
 
@@ -112,26 +126,27 @@ def careful_input(message, sessions, attr):
     sessions.at[session_id, attr] = validate_input
 
     bot.delete_message(message.chat.id, message.message_id - 1)
-    bot.send_message(
-        message.chat.id, 
-        text = session_text, 
-        parse_mode = 'html', 
+    bot.send_photo(
+        chat_id = message.chat.id, 
+        photo = create_series_table_image(sessions.iloc[session_id], "Ваши данные"),
+        parse_mode = 'html',
         reply_markup = session_menu_markup
     )
     
     
-
-
 @bot.callback_query_handler(func = lambda callback: "set-attr" in callback.data)
-def process_(callback):
+def process_set_attributes(callback):
     attr_to_cnange = -1
     for attr in sessions.columns:
         if callback.data == 'set-attr-' + attr:
-            bot.edit_message_text(
-                "Введите " + attr,
-                callback.message.chat.id, 
-                callback.message.message_id,
-                parse_mode='html'
+            bot.edit_message_media(
+                chat_id = callback.message.chat.id, 
+                message_id = callback.message.message_id,
+                media = types.InputMediaPhoto(
+                    img_logo, 
+                    caption = "Введите " + attr, 
+                    parse_mode = 'html'
+                )
             )
             attr_to_cnange = attr
     

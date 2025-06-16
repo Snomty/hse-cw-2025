@@ -1,6 +1,7 @@
 from telebot import types
+from PIL import Image
 
-
+description_information = "Desription later..."
 description_button = types.InlineKeyboardButton(
     text = "✨ Узнать возможности",
     callback_data = 'show-desription'
@@ -35,7 +36,6 @@ back_to_start_menu_button = types.InlineKeyboardButton(
 )
 
 
-
 start_information = (
     "<b>🏡  Добро пожаловать в HomePriceAI!</b>\n\n"
     "\t\t\tВаш личный помощник в прогнозирвании цен на недвижимость на базе искусственного интеллекта"
@@ -51,9 +51,8 @@ back_to_start_menu_markup.add(back_to_start_menu_button)
 
 
 spam_information = "Запрос не распознан, пожалустай, используйте команду <b>/start</b> чтобы начать."
+no_active_session_information = "У вас пока что нет активных сессий. Вы можете создать новую сессию по кнопке в главном меню!"
 
-
-session_text = "Текущая сессия"
 attr_1_button = types.InlineKeyboardButton(
     text = "Параметр 1",
     callback_data = 'set-attr-attr_1' 
@@ -92,3 +91,6 @@ incorrect_user_input_text = ("<b>📛 Ой, кажется, произошла �
 )
 incorrect_user_input_markup = types.InlineKeyboardMarkup()
 incorrect_user_input_markup.add(back_to_session_menu_button)
+
+
+img_logo = Image.open("telegram-bot/logo.png")
