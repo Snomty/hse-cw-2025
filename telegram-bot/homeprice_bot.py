@@ -12,7 +12,6 @@ sessions = load_or_create_sessions()
 
 @bot.message_handler(commands=['start'])
 def process_start(message):
-
     bot.send_photo(
         message.chat.id, 
         photo = img_logo, 
@@ -136,16 +135,71 @@ def careful_input(message, sessions, attr):
         parse_mode = 'html',
         reply_markup = session_menu_markup
     )
+
+def careful_photo_input(message, sessions):
+    user_id = message.from_user.id
+    session_id = get_user_session(sessions, user_id)
+    sessions.at[session_id, 'last_mesage_photo'] = message.message_id
+
+    if not(hasattr(message, 'photo') and bool(message.photo)):
+        bot.send_message(
+            message.chat.id, 
+            text = incorrect_user_input_information, 
+            parse_mode = 'html', 
+        )
+        bot.delete_message(message.chat.id, message.message_id - 1)
+        bot.register_next_step_handler(message, lambda msg: careful_photo_input(msg, sessions))
+        return 0
+
+    bot.delete_message(message.chat.id, message.message_id - 1)
+    bot.send_photo(
+        chat_id = message.chat.id, 
+        photo = create_series_table_image(sessions.iloc[session_id], "Ваши данные"),
+        parse_mode = 'html',
+        reply_markup = session_menu_markup
+    )
     
+# def careful_input_photos(message, sessions):
+#     msg = bot.copy_message(chat_id, chat_id, message_id) 
+#     unique_photos = {}
+    
+#     for photo in message.photo:
+#         if photo.file_unique_id not in unique_photos:
+#             unique_photos[photo.file_unique_id] = photo
+    
+#     saved_photos = []
+    
+#     for file_unique_id, photo in unique_photos.items():
+#         file_info = bot.get_file(photo.file_id)
+#         downloaded_file = bot.download_file(file_info.file_path)
+        
+#         img = Image.open(io.BytesIO(downloaded_file))
+
+#     bot.reply_to(message, reply)
     
 @bot.callback_query_handler(func = lambda callback: "set-attr" in callback.data)
 def process_set_attributes(callback):
+    user_id = callback.message.from_user.id
+    session_id = get_user_session(sessions, user_id)
+
     attr_to_cnange = -1
     for attr in sessions.columns:
-        if callback.data == 'set-attr-' + attr:
-            user_id = callback.message.from_user.id
-            session_id = get_user_session(sessions, user_id)
+        if callback.data == 'set-attr-photos':
+            try:
+                bot.edit_message_media(
+                    chat_id = callback.message.chat.id, 
+                    message_id = callback.message.message_id,
+                    media = types.InputMediaPhoto(
+                        create_series_table_image(sessions.iloc[session_id], "Ваши данные"), 
+                        caption = "Загрузите одно или несколько фото", 
+                        parse_mode = 'html'
+                    )
+                )
+                bot.register_next_step_handler(callback.message, lambda msg: careful_photo_input(msg, sessions))
+            except Exception:
+                pass
 
+        if callback.data == 'set-attr-' + attr:
             bot.edit_message_media(
                 chat_id = callback.message.chat.id, 
                 message_id = callback.message.message_id,
@@ -159,17 +213,8 @@ def process_set_attributes(callback):
     
     if attr_to_cnange == -1:
         return 0
-    
+            
     bot.register_next_step_handler(callback.message, lambda msg: careful_input(msg, sessions, attr_to_cnange))
-
-
-@bot.message_handler(content_types=['audio', 'video', 'text', 'photo'])
-def process_spam(message):
-    bot.send_message(
-        message.chat.id, 
-        text = spam_information,
-        parse_mode = 'html'
-    )
 
 
 if __name__ == "__main__":

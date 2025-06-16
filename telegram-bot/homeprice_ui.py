@@ -50,7 +50,8 @@ start_information = (
 incorrect_user_input_information = ("<b>📛 Ой, кажется, произошла ошибка!</b>\n\n"
     "Похоже, я не могу распознать ваш ввод. Вот что могло пойти не так:\n\n"
     "🔸 <i>Вы ввели текст вместо числа</i>\n"
-    "🔸 <i>Указали значение в неправильном формате (например попыталсь ввести целое число в виде 10.0)</i>\n\n"
+    "🔸 <i>Указали значение в неправильном формате (например попыталсь ввести целое число в виде 10.0)</i>\n"
+    "🔸 <i>Вместо фотографии отправили текст или иные данные</i>\n\n"
     "Попробуйте еще раз:"
 )
 
@@ -87,9 +88,19 @@ back_to_start_menu_button = types.InlineKeyboardButton(
     callback_data = 'back-to-start-menu'
 )
 
-attr_area_button = types.InlineKeyboardButton(
-    text = "Площадь квартиры",
-    callback_data = 'set-attr-area' 
+attr_photo_button = types.InlineKeyboardButton(
+    text = "Фотографии ремонта",
+    callback_data = 'set-attr-photos' 
+)
+
+attr_city_button = types.InlineKeyboardButton(
+    text = "Город",
+    callback_data = 'set-attr-city' 
+)
+
+attr_street_button = types.InlineKeyboardButton(
+    text = "Адрес",
+    callback_data = 'set-attr-street' 
 )
 
 attr_rooms_button = types.InlineKeyboardButton(
@@ -97,9 +108,29 @@ attr_rooms_button = types.InlineKeyboardButton(
     callback_data = 'set-attr-rooms' 
 )
 
-attr_ceilingHeight_button = types.InlineKeyboardButton(
-    text = "Высота потолков",
-    callback_data = 'set-attr-ceilingHeight' 
+attr_area_button = types.InlineKeyboardButton(
+    text = "Площадь квартиры",
+    callback_data = 'set-attr-area' 
+)
+
+attr_nearest_metro_button = types.InlineKeyboardButton(
+    text = "Ближайшее станция метро",
+    callback_data = 'set-attr-nearest_metro' 
+)
+
+attr_time_to_metro_button = types.InlineKeyboardButton(
+    text = "Время до станции",
+    callback_data = 'set-attr-time_to_metro' 
+)
+
+attr_nearest_pond_button = types.InlineKeyboardButton(
+    text = "Ближайший парк",
+    callback_data = 'set-attr-nearest_pond' 
+)
+
+attr_distance_pond_button = types.InlineKeyboardButton(
+    text = "Расстояние до парка",
+    callback_data = 'set-attr-distance_pond' 
 )
 
 get_prediction_button = types.InlineKeyboardButton(
@@ -131,9 +162,13 @@ incorrect_user_input_markup = types.InlineKeyboardMarkup()
 incorrect_user_input_markup.add(back_to_session_menu_button)
 
 session_menu_markup = types.InlineKeyboardMarkup()
-session_menu_markup.row(attr_area_button, attr_rooms_button)
-session_menu_markup.row(attr_ceilingHeight_button)
-session_menu_markup.add(get_prediction_button, end_and_save_session_button)
+session_menu_markup.add(attr_photo_button)
+session_menu_markup.row(attr_city_button, attr_street_button)
+session_menu_markup.row(attr_rooms_button, attr_area_button)
+session_menu_markup.row(attr_nearest_metro_button, attr_time_to_metro_button)
+session_menu_markup.row(attr_nearest_pond_button, attr_distance_pond_button)
+session_menu_markup.add(get_prediction_button)
+session_menu_markup.add(end_and_save_session_button)
 
 
 # ==================== ДРУГИЕ РЕСУРСЫ ====================

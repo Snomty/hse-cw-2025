@@ -1,6 +1,7 @@
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import io
 from io import BytesIO
 
 
@@ -17,6 +18,7 @@ def create_series_table_image(series, title="Данные"):
         'Значение': series.values
     })
     df['Значение'] = df['Значение'].apply(lambda x: '' if pd.isna(x) else str(x))
+    df.iloc[0] = ("Фотографии ремонта", "" if pd.isna(series['last_mesage_photo']) else "Добавлены")
 
     fig, ax = plt.subplots(figsize=(8, len(series)*0.5 + 1))
     ax.axis('off')
@@ -46,35 +48,36 @@ def create_new_session(sessions, user_id):
         sessions.loc[session_id, sessions.columns[1:]] = np.nan
         return session_id
     
-    new_session = { 'user_id': user_id, **{col: np.nan for col in sessions.columns[1:]} }
+    new_session = { 'user_id': user_id }
+    for col in sessions.columns[1:]:
+        if pd.api.types.is_object_dtype(sessions[col]):
+            new_session[col] = "" 
+        else:
+            new_session[col] = np.nan 
 
     sessions.loc[sessions.shape[0]] = new_session
-
     return sessions.shape[0] - 1
     
 
 data_types = {
     'user_id':              'float64',
-    'area':                 'float64',
+    'last_mesage_photo':    'float64',
+    'city':                 'object',
+    'street':               'object',
     'rooms':                'float64',
-    'ceilingHeight':        'float64',
-    'kitchen_space':        'float64',
-    'floor':                'float64',
-    'floorsTotal':          'float64',
-    'address':              'object',
+    'area':                 'float64',
     'nearest_metro':        'object',
     'time_to_metro':        'float64',
-    'transport_to_metro':   'object',
-    'branch_metro_color':   'object',
-
+    'nearest_pond':         'object',
+    'distance_pond':        'float64'
 }
- 
+
 def load_or_create_sessions():
     try:
         result = pd.read_csv("telegram-bot/sessions.csv").astype(data_types)
     except FileNotFoundError:
         result = pd.DataFrame(columns=data_types.keys()).astype(data_types)
         result.to_csv("telegram-bot/sessions.csv", index=False)
-    
+
     return result
 
