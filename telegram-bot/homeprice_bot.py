@@ -1,7 +1,7 @@
 import telebot
 import os
 
-from buttons import *
+from homeprice_ui import *
 from config import API
 from sessions_utility import *
 
@@ -30,7 +30,10 @@ def process_navigation(callback):
         bot.edit_message_media(
             chat_id = callback.message.chat.id, 
             message_id = callback.message.message_id,
-            media = types.InputMediaPhoto(img_logo, caption=successful_new_session_text, parse_mode = 'html'),
+            media = types.InputMediaPhoto(
+                img_logo, 
+                caption = successful_new_session_information, 
+                parse_mode = 'html'),
             reply_markup = back_to_start_menu_markup
         )
 
@@ -115,9 +118,10 @@ def careful_input(message, sessions, attr):
     if not is_correct_input:
         bot.send_message(
             message.chat.id, 
-            text = incorrect_user_input_text, 
+            text = incorrect_user_input_information, 
             parse_mode = 'html', 
         )
+        bot.delete_message(message.chat.id, message.message_id - 1)
         bot.register_next_step_handler(message, lambda msg: careful_input(msg, sessions, attr))
         return 0
     
@@ -139,11 +143,14 @@ def process_set_attributes(callback):
     attr_to_cnange = -1
     for attr in sessions.columns:
         if callback.data == 'set-attr-' + attr:
+            user_id = callback.message.from_user.id
+            session_id = get_user_session(sessions, user_id)
+
             bot.edit_message_media(
                 chat_id = callback.message.chat.id, 
                 message_id = callback.message.message_id,
                 media = types.InputMediaPhoto(
-                    img_logo, 
+                    create_series_table_image(sessions.iloc[session_id], "Ваши данные"), 
                     caption = "Введите " + attr, 
                     parse_mode = 'html'
                 )

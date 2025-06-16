@@ -54,10 +54,19 @@ def create_new_session(sessions, user_id):
     
 
 data_types = {
-    'user_id': 'float64',
-    'attr_1': 'float64',
-    'attr_2': 'float64',
-    'attr_3': 'object'
+    'user_id':              'float64',
+    'area':                 'float64',
+    'rooms':                'float64',
+    'ceilingHeight':        'float64',
+    'kitchen_space':        'float64',
+    'floor':                'float64',
+    'floorsTotal':          'float64',
+    'address':              'object',
+    'nearest_metro':        'object',
+    'time_to_metro':        'float64',
+    'transport_to_metro':   'object',
+    'branch_metro_color':   'object',
+
 }
  
 def load_or_create_sessions():
@@ -67,6 +76,5 @@ def load_or_create_sessions():
         result = pd.DataFrame(columns=data_types.keys()).astype(data_types)
         result.to_csv("telegram-bot/sessions.csv", index=False)
     
-    print(result.dtypes)
     return result
 
