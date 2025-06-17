@@ -58,9 +58,12 @@ incorrect_user_input_information = ("<b>📛 Ой, кажется, произо�
 spam_information = "Запрос не распознан, пожалустай, используйте команду <b>/start</b> чтобы начать."
 
 no_active_session_information = (
-    "У вас пока что нет активных сессий. Вы можете создать новую сессию по кнопке в главном меню!"
+    "У вас пока что нет активных сессий. Вы можете создать <b>новую сессию</b> по кнопке в главном меню!"
 )
 
+fill_all_data_information = (
+    "<b>📝 Пожалуйста, введите все данные (кроме фото), чтобы получить предсказание</b>\n\n"
+)
 
 # ==================== ОПРЕДЕЛЕНИЕ КНОПОК ====================
 description_button = types.InlineKeyboardButton(
@@ -157,6 +160,9 @@ start_markup.add(project_link_button)
 
 back_to_start_menu_markup = types.InlineKeyboardMarkup()
 back_to_start_menu_markup.add(back_to_start_menu_button)
+
+back_to_session_menu_markup = types.InlineKeyboardMarkup()
+back_to_session_menu_markup.add(back_to_session_menu_button)
 
 incorrect_user_input_markup = types.InlineKeyboardMarkup()
 incorrect_user_input_markup.add(back_to_session_menu_button)
