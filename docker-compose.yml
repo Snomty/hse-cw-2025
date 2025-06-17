@@ -1,8 +1,0 @@
-services:
-  homeprice-bot:
-    build: .
-    container_name: homeprice-bot
-    restart: unless-stopped
-    volumes:
-      - .:/app
-    command: python telegram-bot/homeprice_bot.py  # Убедитесь, что это прописано
