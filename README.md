@@ -15,6 +15,8 @@
     │   └── stacking_model.pkl                  # Основаня модель
     └── README.md                           # Описание ветки
 
+### 🎥 Демонстрация работы
+![](report/telegeam_bot_demo.gif)
 
 ## 🚀 Быстрый старт
 
