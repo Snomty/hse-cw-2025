@@ -1,6 +1,7 @@
 config.py
 sessions.csv
 test_input.csv
+test_input_raw.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

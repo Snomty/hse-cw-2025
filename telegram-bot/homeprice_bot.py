@@ -8,7 +8,7 @@ from homeprice_predict import *
 
 bot = telebot.TeleBot(API)
 sessions = load_or_create_sessions()
-model = load_models()
+model, preprocessor = load_models()
 
 @bot.message_handler(commands=['start'])
 def process_start(message):
@@ -19,7 +19,6 @@ def process_start(message):
         parse_mode = 'html', 
         reply_markup = start_markup
     )
-    predict_pipline(message, model, sessions)
 
 @bot.callback_query_handler(func = lambda callback: "set-attr" not in callback.data)
 def process_navigation(callback):
@@ -90,8 +89,18 @@ def process_navigation(callback):
                 ),
                 reply_markup = back_to_session_menu_markup
             )
-        predict_pipline(callback.message, model, sessions)
-        
+            return 0
+        predict = predict_pipline(callback.message, model, preprocessor, sessions)
+        bot.edit_message_media(
+            chat_id = callback.message.chat.id, 
+            message_id = callback.message.message_id,
+            media = types.InputMediaPhoto(
+                create_series_table_image(sessions.iloc[session_id], "Ваши данные"),
+                caption = "<b>Справедливая цена вашей квартиры:</b> " + str(round(predict)) + " руб.", 
+                parse_mode = 'html'
+            ),
+            reply_markup = back_to_session_menu_markup
+        )
 
     elif callback.data == 'save-and-end-session':
         user_id = callback.from_user.id
