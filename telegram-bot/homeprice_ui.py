@@ -106,6 +106,16 @@ attr_street_button = types.InlineKeyboardButton(
     callback_data = 'set-attr-street' 
 )
 
+attr_seller_button = types.InlineKeyboardButton(
+    text = "Кто продает",
+    callback_data = 'set-attr-seller' 
+)
+
+attr_kitchen_space_button = types.InlineKeyboardButton(
+    text = "Площадь кухни",
+    callback_data = 'set-attr-kitchen_space' 
+)
+
 attr_rooms_button = types.InlineKeyboardButton(
     text = "Количество комнат",
     callback_data = 'set-attr-rooms' 
@@ -114,6 +124,26 @@ attr_rooms_button = types.InlineKeyboardButton(
 attr_area_button = types.InlineKeyboardButton(
     text = "Площадь квартиры",
     callback_data = 'set-attr-area' 
+)
+
+attr_floor_button = types.InlineKeyboardButton(
+    text = "Введите этаж квартиры",
+    callback_data = 'set-attr-floor' 
+)
+
+attr_floorsTotal_button = types.InlineKeyboardButton(
+    text = "Введите этажность дома",
+    callback_data = 'set-attr-floorsTotal' 
+)
+
+attr_distance_airport_button = types.InlineKeyboardButton(
+    text = "Расстояние до аэропорта",
+    callback_data = 'set-attr-distance_airport' 
+)
+
+attr_time_airport_via_car_button = types.InlineKeyboardButton(
+    text = "Время езды до аэропорта",
+    callback_data = 'set-attr-time_airport_via_car' 
 )
 
 attr_nearest_metro_button = types.InlineKeyboardButton(
@@ -170,9 +200,12 @@ incorrect_user_input_markup.add(back_to_session_menu_button)
 session_menu_markup = types.InlineKeyboardMarkup()
 session_menu_markup.add(attr_photo_button)
 session_menu_markup.row(attr_city_button, attr_street_button)
+session_menu_markup.row(attr_seller_button, attr_kitchen_space_button)
 session_menu_markup.row(attr_rooms_button, attr_area_button)
+session_menu_markup.row(attr_floor_button, attr_floorsTotal_button)
 session_menu_markup.row(attr_nearest_metro_button, attr_time_to_metro_button)
 session_menu_markup.row(attr_nearest_pond_button, attr_distance_pond_button)
+session_menu_markup.row(attr_distance_airport_button, attr_time_airport_via_car_button)
 session_menu_markup.add(get_prediction_button)
 session_menu_markup.add(end_and_save_session_button)
 

@@ -64,12 +64,18 @@ data_types = {
     'last_mesage_photo':    'float64',
     'city':                 'object',
     'street':               'object',
+    'seller':               'object',
+    'kitchen_space':        'float64', 
     'rooms':                'float64',
     'area':                 'float64',
+    'floor':                'float64',
+    'floorsTotal':          'float64',
     'nearest_metro':        'object',
     'time_to_metro':        'float64',
     'nearest_pond':         'object',
-    'distance_pond':        'float64'
+    'distance_pond':        'float64',
+    'distance_airport':     'float64',
+    'time_airport_via_car': 'float64'
 }
 
 def load_or_create_sessions():

@@ -1,28 +1,26 @@
-# Этап 1: Установка системных зависимостей с кешированием
-FROM python:3.9-slim as builder
+# Этап 1: Базовый образ с явным тегом (вместо python:3.9-slim-bookworm)
+FROM python:3.9.18-slim
 
-# Кешируем apt-пакеты (обновляем только при изменении этого блока)
-RUN echo "Updating apt packages..." && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libfreetype6-dev \
-    libpng-dev \
-    libjpeg-dev && \
-    rm -rf /var/lib/apt/lists/*
-
-# Этап 2: Основной образ
-FROM python:3.9-slim
 WORKDIR /app
 
-# Копируем системные зависимости из builder
-COPY --from=builder /usr/lib /usr/lib
-COPY --from=builder /usr/include /usr/include
+# 1. Установка системных зависимостей
+RUN apt-get update && apt-get install -y \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем Python-зависимости (кешируются отдельно)
+# 2. Установка Python-зависимостей в правильном порядке
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir \
+    numpy==1.23.5 \
+    scipy==1.9.3 \
+    scikit-learn==1.1.3 \
+    && pip install --no-cache-dir -r requirements.txt
 
-# Копируем код
+# 3. Проверка версий
+RUN python -c "import numpy as np; print(f'NUMPY VERSION: {np.__version__}')"
+
+# 4. Копирование кода
 COPY . .
 
 CMD ["python", "telegram-bot/homeprice_bot.py"]

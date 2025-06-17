@@ -1,14 +1,14 @@
 import telebot
-import os
 
 from homeprice_ui import *
 from config import API
 from sessions_utility import *
+from homeprice_predict import *
 
 
 bot = telebot.TeleBot(API)
 sessions = load_or_create_sessions()
-
+model = load_models()
 
 @bot.message_handler(commands=['start'])
 def process_start(message):
@@ -19,6 +19,7 @@ def process_start(message):
         parse_mode = 'html', 
         reply_markup = start_markup
     )
+    predict_pipline(message, model, sessions)
 
 @bot.callback_query_handler(func = lambda callback: "set-attr" not in callback.data)
 def process_navigation(callback):
@@ -89,7 +90,7 @@ def process_navigation(callback):
                 ),
                 reply_markup = back_to_session_menu_markup
             )
-
+        predict_pipline(callback.message, model, sessions)
         
 
     elif callback.data == 'save-and-end-session':
@@ -178,23 +179,6 @@ def careful_photo_input(message, sessions):
         reply_markup = session_menu_markup
     )
     
-# def careful_input_photos(message, sessions):
-#     msg = bot.copy_message(chat_id, chat_id, message_id) 
-#     unique_photos = {}
-    
-#     for photo in message.photo:
-#         if photo.file_unique_id not in unique_photos:
-#             unique_photos[photo.file_unique_id] = photo
-    
-#     saved_photos = []
-    
-#     for file_unique_id, photo in unique_photos.items():
-#         file_info = bot.get_file(photo.file_id)
-#         downloaded_file = bot.download_file(file_info.file_path)
-        
-#         img = Image.open(io.BytesIO(downloaded_file))
-
-#     bot.reply_to(message, reply)
     
 @bot.callback_query_handler(func = lambda callback: "set-attr" in callback.data)
 def process_set_attributes(callback):
