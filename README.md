@@ -44,10 +44,14 @@
    - ElasticNet
 
 2. **Ансамбли:**
-   - ...
+   - XGBoost
+   - LightGBM
+   - Random Forest
 
 3. **Нейросети:**
-   - ...
+   - efficientnet b4
+   - resnet18
+   - resnet50
 
 
 ## 📌 Следующие шаги
