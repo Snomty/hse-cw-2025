@@ -13,7 +13,7 @@ RUN pip install --upgrade "pip<23.1" && \
     pip install --no-cache-dir \
     numpy==1.22.4 \
     scipy==1.8.1 \
-    scikit-learn==1.1.2 \
+    scikit-learn==1.6.1 \
     && pip install --no-cache-dir -r requirements.txt
 
 # 3. Проверка версий
